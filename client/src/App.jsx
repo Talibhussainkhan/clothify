@@ -4,10 +4,12 @@ import About from './pages/About';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Product from './pages/Product';
+import Navbar from './components/Navbar';
 
 const App = () => {
   return (
     <>
+    <Navbar />
     <Routes>
 
       {/* client Route */}
