@@ -9,7 +9,9 @@ const Navbar = () => {
   return (
     <div className="py-3 max-w-7xl 2xl:max-w-[1500px] mx-auto border-b border-gray-300 px-5 sm:px-3">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl text-slate-700 font-bold">Clothify</h1>
+        <Link to={'/'}>
+        <h1 className="text-2xl text-slate-700 font-bold select-none">Clothify</h1>
+        </Link>
         <div className="flex-1 px-4 hidden sm:block">
           <div className="border border-gray-400 mx-auto px-3 py-2 rounded-lg  max-w-md flex items-center">
             <input
