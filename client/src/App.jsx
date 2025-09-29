@@ -1,23 +1,37 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Product from './pages/Product';
 import Navbar from './components/Navbar';
+import AdminLayout from './components/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import AddProduct from './pages/admin/AddProduct';
+import ManageProduct from './pages/admin/ManageProduct';
+import ManageOrder from './pages/admin/ManageOrder';
 
 const App = () => {
+  const location = useLocation();
   return (
     <>
-    <Navbar />
+    {!location.pathname.startsWith('/admin') && <Navbar />}
     <Routes>
-
       {/* client Route */}
       <Route path='/' element={<Home />} />
       <Route path='/about' element={<About />} />
       <Route path='/cart' element={<Cart />} />
       <Route path='/checkout' element={<Checkout />} />
       <Route path='/product' element={<Product />} />
+
+      {/* admin route */}
+       <Route path='/admin' element={<AdminLayout />}>
+       <Route index element={<Dashboard />} />
+       <Route path='add-product' element={<AddProduct />} />
+       <Route path='manage-product' element={<ManageProduct />} />
+       <Route path='manage-order' element={<ManageOrder />} />
+       </Route>     
+
     </Routes>
     </>
   )
