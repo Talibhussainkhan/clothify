@@ -10,6 +10,7 @@ import Dashboard from './pages/admin/Dashboard';
 import AddProduct from './pages/admin/AddProduct';
 import ManageProduct from './pages/admin/ManageProduct';
 import ManageOrder from './pages/admin/ManageOrder';
+import Notfound from './pages/Notfound';
 
 const App = () => {
   const location = useLocation();
@@ -31,7 +32,7 @@ const App = () => {
        <Route path='manage-product' element={<ManageProduct />} />
        <Route path='manage-order' element={<ManageOrder />} />
        </Route>     
-
+      <Route path='*' element={<Notfound />} />
     </Routes>
     </>
   )
