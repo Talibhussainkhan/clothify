@@ -4,12 +4,14 @@ import { NavLink, Outlet } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
 import { AiFillEdit } from "react-icons/ai";
+import { MdBorderInner } from "react-icons/md";
+
 
 const sidebarMenu = [
   { title: "Dashboard", icon: MdOutlineDashboard, link: "/admin" },
   { title: "Add Product", icon: IoAddSharp, link: "/admin/add-product" },
   { title: "Manage Product", icon: AiFillEdit, link: "/admin/manage-product" },
-  { title: "Manage Order", icon: AiFillEdit, link: "/admin/manage-order" },
+  { title: "Manage Order", icon: MdBorderInner, link: "/admin/manage-order" },
 ];
 
 const AdminLayout = () => {
