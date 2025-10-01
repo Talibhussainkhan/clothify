@@ -5,6 +5,9 @@ import { MdOutlineDashboard } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
 import { AiFillEdit } from "react-icons/ai";
 import { MdBorderInner } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { logout } from "../store/AuthSlice/adminAuth";
+import toast from "react-hot-toast";
 
 
 const sidebarMenu = [
@@ -16,6 +19,12 @@ const sidebarMenu = [
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const dispatch = useDispatch();
+
+   const handleLogout = () =>{
+    dispatch(logout());
+    toast.success('logged out!')
+   }
 
   return (
     <div className="h-screen flex flex-col">
@@ -25,7 +34,7 @@ const AdminLayout = () => {
         </h1>
         <div className="flex gap-5 items-center">
           <span className="border px-2 rounded-lg">admin</span>
-          <span className="border px-2 text-red-600 rounded-lg cursor-pointer">
+          <span onClick={handleLogout} className="border px-2 text-red-600 rounded-lg cursor-pointer">
             logout
           </span>
         </div>

@@ -18,9 +18,12 @@ export const adminSlice = createSlice({
         },
         signInFailure : (state, action) => {
            state.isLoading = false
+        },
+        logout : ( state ) => {
+            state.isAuth = false
         }
     }
 })
 
-export const { signInStart, signInFailure, signInSuccess } = adminSlice.actions
+export const { signInStart, signInFailure, signInSuccess, logout } = adminSlice.actions
 export default adminSlice.reducer;
