@@ -1,12 +1,31 @@
+import axios from "axios";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { signInFailure, signInStart, signInSuccess } from "../../store/AuthSlice/adminAuth";
 
 const Login = () => {
+     
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
+    const [email, setEmail] = useState('clothify@admin.com');
+    const [password, setPassword] = useState('admin@1234');
+    const dispatch = useDispatch();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+        dispatch(signInStart());
+        const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+        if(data.success === false){
+            toast.error(data.message);
+            dispatch(signInFailure());
+            return
+        }
+        dispatch(signInSuccess());
+        toast.success(data.message);
+    } catch (error) {
+        dispatch(signInFailure());
+        toast.error(error.message);
+    }
   };
 
   return (
