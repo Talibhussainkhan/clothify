@@ -11,11 +11,14 @@ import AddProduct from './pages/admin/AddProduct';
 import ManageProduct from './pages/admin/ManageProduct';
 import ManageOrder from './pages/admin/ManageOrder';
 import Notfound from './pages/Notfound';
+import { Toaster } from "react-hot-toast";
+
 
 const App = () => {
   const location = useLocation();
   return (
     <>
+    <Toaster />
     {!location.pathname.startsWith('/admin') && <Navbar />}
     <Routes>
       {/* client Route */}
