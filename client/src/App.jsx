@@ -12,6 +12,7 @@ import ManageProduct from './pages/admin/ManageProduct';
 import ManageOrder from './pages/admin/ManageOrder';
 import Notfound from './pages/Notfound';
 import { Toaster } from "react-hot-toast";
+import Login from './pages/admin/Login';
 
 
 const App = () => {
@@ -19,7 +20,7 @@ const App = () => {
   return (
     <>
     <Toaster />
-    {!location.pathname.startsWith('/admin') && <Navbar />}
+    {!location.pathname.startsWith('/admin') || !location.pathname.startsWith('/login') && <Navbar />}
     <Routes>
       {/* client Route */}
       <Route path='/' element={<Home />} />
@@ -29,6 +30,7 @@ const App = () => {
       <Route path='/product' element={<Product />} />
 
       {/* admin route */}
+      <Route path='/login' element={<Login />} />
        <Route path='/admin' element={<AdminLayout />}>
        <Route index element={<Dashboard />} />
        <Route path='add-product' element={<AddProduct />} />
