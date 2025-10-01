@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signInFailure, signInStart, signInSuccess } from "../../store/AuthSlice/adminAuth";
 
 const Login = () => {
-     
+    const { isLoading } = useSelector((state) => state.admin)
 
     const [email, setEmail] = useState('clothify@admin.com');
     const [password, setPassword] = useState('admin@1234');
@@ -27,6 +27,7 @@ const Login = () => {
         toast.error(error.message);
     }
   };
+
 
   return (
     <div className="h-screen flex items-center justify-center px-5">
@@ -57,7 +58,9 @@ const Login = () => {
             required
           />
         </div>
-        <button className="bg-slate-700 text-white p-3 rounded">Login</button>
+        <button disabled={isLoading} className="bg-slate-700 text-white p-3 rounded">
+          { isLoading ? "Login..." : "Login" }  
+        </button>
       </form>
     </div>
   );
