@@ -30,3 +30,17 @@ export const getAllProductForAdmin = async (req, res) => {
     res.json({ success : false, error : error.message })
   }
 }
+
+export const getDeleteProductById = async (req, res)=>{
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndDelete(id);
+    if(product){
+      res.json({ success : true, message : 'Product Deleted Successfully' });
+    }else{
+      res.json({ success : false, message : 'Product not found!' });
+    }
+  } catch (error) {
+    res.json({ success : false, error: error.message })
+  }
+}
