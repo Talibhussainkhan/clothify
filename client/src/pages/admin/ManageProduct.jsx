@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { MdDelete } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
+import toast from 'react-hot-toast';
 
 
 const getProduct = async () =>{
@@ -9,43 +10,28 @@ const getProduct = async () =>{
   return res.data;
 }
 
+const deleteProduct = async (id) => {
+  const res = await axios.delete(`http://localhost:5000/api/product/delete/${id}`);
+  return res.data;
+}
+
 const ManageProduct = () => {
+
+  const queryClient = useQueryClient();
+
 
   const { data } = useQuery({
     queryKey : ['products'],
     queryFn : getProduct
-  })
+  });
 
-  console.log(data)
-
-
-
-  const products = [
-    {
-      name: "Nike Pegasus 41 shoes",
-      category: "Shoes",
-      offerPrice: 999,
-      inStock: true,
-      image:
-        "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage.png",
+  const { mutate, isPending } = useMutation({
+    mutationFn : deleteProduct,
+    onSuccess: (data) => {
+    queryClient.invalidateQueries(["products"]);
+    toast.success(data.message);
     },
-    {
-      name: "Nike Pegasus 41 shoes",
-      category: "Shoes",
-      offerPrice: 999,
-      inStock: false,
-      image:
-        "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage2.png",
-    },
-    {
-      name: "Nike Pegasus 41 shoes",
-      category: "Shoes",
-      offerPrice: 999,
-      inStock: true,
-      image:
-        "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/card/productImage3.png",
-    },
-  ];
+  });
 
   return (
     <div className="flex-1 py-10 flex flex-col justify-between">
@@ -80,7 +66,7 @@ const ManageProduct = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className='flex gap-2 text-xl'>
-                      <button className='cursor-pointer text-red-500'><MdDelete /></button>
+                      <button disabled={isPending} onClick={() =>mutate(product._id)} className='cursor-pointer text-red-500'><MdDelete /></button>
                       <button className='cursor-pointer text-green-500'><FaRegEdit /></button>
                     </div>
                   </td>
