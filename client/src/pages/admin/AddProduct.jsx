@@ -37,8 +37,7 @@ const AddProduct = () => {
         discount: false,
         offerPrice: 0,
       });
-      // Invalidate and refetch users list after successful post
-      // queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
     },
     onError: (error) => {
       toast.error(error.response?.data?.message || "Something went wrong");

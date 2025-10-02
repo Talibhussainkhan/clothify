@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, Link } from "react-router-dom";
 import { MdOutlineDashboard } from "react-icons/md";
 import { IoAddSharp } from "react-icons/io5";
 import { AiFillEdit } from "react-icons/ai";
@@ -30,7 +30,9 @@ const AdminLayout = () => {
     <div className="h-screen flex flex-col">
       <nav className="h-[60px] px-4 sm:px-10 flex justify-between items-center border-b border-gray-400 shadow">
         <h1 className="text-2xl text-slate-700 font-bold select-none">
+          <Link to='/'>
           Clothify
+          </Link>
         </h1>
         <div className="flex gap-5 items-center">
           <span className="border px-2 rounded-lg">admin</span>

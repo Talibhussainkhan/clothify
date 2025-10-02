@@ -21,3 +21,12 @@ export const addProduct = async (req, res) =>{
         res.json({ success : false, error : error.message })
     }
 }
+
+export const getAllProductForAdmin = async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.json({ success : true, products });
+  } catch (error) {
+    res.json({ success : false, error : error.message })
+  }
+}
