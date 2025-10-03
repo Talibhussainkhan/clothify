@@ -44,3 +44,14 @@ export const getDeleteProductById = async (req, res)=>{
     res.json({ success : false, error: error.message })
   }
 }
+
+export const getProductById = async (req, res) =>{
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if( !product ) return res.json({ success : false, message : 'Product not Found!' });
+    res.json({ success : true, product })
+  } catch (error) {
+    res.json({ success : false, message : error.message })
+  }
+}
