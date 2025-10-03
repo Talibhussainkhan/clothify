@@ -15,6 +15,7 @@ import { Toaster } from "react-hot-toast";
 import Login from './pages/admin/Login';
 import { useSelector } from 'react-redux';
 import ProtectRoute from './utils/ProtectRoute';
+import UpdateProject from './pages/admin/UpdateProject';
 
 
 
@@ -46,6 +47,7 @@ const App = () => {
        <Route path='add-product' element={<AddProduct />} />
        <Route path='manage-product' element={<ManageProduct />} />
        <Route path='manage-order' element={<ManageOrder />} />
+         <Route path='update-product/:id' element={<UpdateProject />} />
        </Route>     
       <Route path='*' element={<Notfound />} />
     </Routes>

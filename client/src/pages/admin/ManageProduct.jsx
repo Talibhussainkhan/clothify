@@ -3,6 +3,7 @@ import axios from 'axios';
 import { MdDelete } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 
 const getProduct = async () =>{
@@ -18,7 +19,7 @@ const deleteProduct = async (id) => {
 const ManageProduct = () => {
 
   const queryClient = useQueryClient();
-
+  const navigate = useNavigate();
 
   const { data } = useQuery({
     queryKey : ['products'],
@@ -50,7 +51,7 @@ const ManageProduct = () => {
               </tr>
             </thead>
             <tbody className="text-sm text-gray-500">
-              {data.products.map((product, index) => (
+              {data?.products.map((product, index) => (
                 <tr key={index} className="border-t border-gray-500/20">
                   <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
                     <div className="border border-gray-300 rounded overflow-hidden">
@@ -67,7 +68,7 @@ const ManageProduct = () => {
                   <td className="px-4 py-3">
                     <div className='flex gap-2 text-xl'>
                       <button disabled={isPending} onClick={() =>mutate(product._id)} className='cursor-pointer text-red-500'><MdDelete /></button>
-                      <button className='cursor-pointer text-green-500'><FaRegEdit /></button>
+                      <button onClick={()=> navigate(`/admin/update-product/${product._id}`)} className='cursor-pointer text-green-500'><FaRegEdit /></button>
                     </div>
                   </td>
                 </tr>
