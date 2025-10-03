@@ -1,30 +1,78 @@
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+const fetchProductById = async (id) => {
+  const res = await axios.get(`http://localhost:5000/api/product/get/${id}`);
+  return res.data;
+};
 
 const UpdateProject = () => {
+  const [productData, setProductData] = useState({
+    images: Array(4).fill(null),
+    name: "",
+    description: "",
+    category: "",
+    price: 0,
+    discount: false,
+    offerPrice: 0,
+  });
+  const { id } = useParams();
 
-    const [productData, setProductData] = useState({
-        images: Array(4).fill(null),
-        name: "",
-        description: "",
-        category: "",
-        price: 0,
-        discount: false,
-        offerPrice: 0,
+  const { data } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => fetchProductById(id),
+  });
+
+  useEffect(() => {
+    if (data) {
+      setProductData({
+        images: data.product.images || Array(4).fill(null),
+        name: data.product.name || "",
+        description: data.product.description || "",
+        category: data.product.category || "",
+        price: data.product.price || 0,
+        discount: data.product.discount || false,
+        offerPrice: data.product.offerPrice || 0,
       });
+    }
+  }, [data]);
 
-      const { id } = useParams();
 
-    const handleChange = async () =>{}
+  const handleImage = (e, index) => {
+    const file = e.target.files[0];
+      if (file) {
+        const newImages = [...productData.images];
+        newImages[index] = file;
+        console.log(newImages);
+        setProductData({ ...productData, images: newImages });
+      }
+  };
+
+  const handleChange = (e) => {
+    if (
+      e.target.id === "name" ||
+      e.target.id === "description" ||
+      e.target.id === "category" ||
+      e.target.id === "price" ||
+      e.target.id === "offerPrice"
+    ) {
+      setProductData({ ...productData, [e.target.id]: e.target.value });
+    }
+    if (e.target.id === "discount") {
+      setProductData({ ...productData, [e.target.id]: e.target.checked });
+    }
+  };
 
   return (
-   <>
+    <>
       <div className="flex flex-col justify-between">
         <h1 className="text-2xl text-slate-700 font-bold px-10">
           Update Products
         </h1>
         <form
-        //   onSubmit={handleSubmit}
+          //   onSubmit={handleSubmit}
           className="md:px-10 p-4 flex flex-col sm:flex-row gap-4 max-w-6xl"
         >
           <div className="flex-1 flex flex-col gap-5">
@@ -45,10 +93,11 @@ const UpdateProject = () => {
                       <img
                         className="max-w-24 cursor-pointer"
                         src={
-                        //   productData.images[index]
-                        //     ? URL.createObjectURL(productData.images[index])
-                        //     :
-                            "/uploadArea.png"
+                          productData.images[index]
+                            ? typeof productData.images[index] === "string"
+                              ? productData.images[index] 
+                              : URL.createObjectURL(productData.images[index]) 
+                            : "/uploadArea.png" 
                         }
                         alt="uploadArea"
                         width={100}
@@ -157,14 +206,14 @@ const UpdateProject = () => {
               type="submit"
               className="px-8 py-2.5 bg-indigo-500 text-white font-medium rounded"
             >
-                Update
+              Update
               {/* {isPending ? "Adding" : "ADD"} */}
             </button>
           </div>
         </form>
       </div>
-    </>    
-)
-}
+    </>
+  );
+};
 
-export default UpdateProject
+export default UpdateProject;
