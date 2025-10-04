@@ -55,3 +55,25 @@ export const getProductById = async (req, res) =>{
     res.json({ success : false, message : error.message })
   }
 }
+
+export const updateProductById = async (req, res) =>{
+  try {
+    const { id } = req.params;
+    const uploadedImages = req.files.map(file => file.path);
+    const { name, description, category, price, discount, offerPrice } = req.body;
+    const product = await Product.findByIdAndUpdate(id, {
+      $set : {
+        images : uploadedImages,
+        name,
+        description,
+        category,
+        price : Number(price),
+        discount : discount === "true" ? true : false,
+        offerPrice : Number(offerPrice)
+      }
+    }, { new : true });
+    res.json({ success : true, message : 'Product updated Sucessfully!' })
+  } catch (error) {
+    res.json({ success : false, message : error.message })
+  }
+}

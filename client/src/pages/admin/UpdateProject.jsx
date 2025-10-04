@@ -20,7 +20,7 @@ const UpdateProject = () => {
   });
   const { id } = useParams();
 
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
   });
@@ -64,6 +64,12 @@ const UpdateProject = () => {
       setProductData({ ...productData, [e.target.id]: e.target.checked });
     }
   };
+
+  if(isPending){
+    return (
+      <div className="text-center text-2xl my-4">Loading...</div>
+    )
+  }
 
   return (
     <>
