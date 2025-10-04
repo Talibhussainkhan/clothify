@@ -59,20 +59,26 @@ export const getProductById = async (req, res) =>{
 export const updateProductById = async (req, res) =>{
   try {
     const { id } = req.params;
-    const uploadedImages = req.files.map(file => file.path);
-    const { name, description, category, price, discount, offerPrice } = req.body;
-    const product = await Product.findByIdAndUpdate(id, {
-      $set : {
-        images : uploadedImages,
-        name,
-        description,
-        category,
-        price : Number(price),
-        discount : discount === "true" ? true : false,
-        offerPrice : Number(offerPrice)
-      }
-    }, { new : true });
-    res.json({ success : true, message : 'Product updated Sucessfully!' })
+     const existingProduct = await Product.findById(id);
+    if (!existingProduct) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    const uploadedImages = req.files && req.files.length > 0 
+      ? req.files.map(file => file.path) 
+      : existingProduct.images;
+
+     const updateData = {
+      images: uploadedImages,
+      name: req.body.name || existingProduct.name,
+      description: req.body.description || existingProduct.description,
+      category: req.body.category || existingProduct.category,
+      price: req.body.price ? Number(req.body.price) : existingProduct.price,
+      discount: req.body.discount ? req.body.discount === "true" : existingProduct.discount,
+      offerPrice: req.body.offerPrice ? Number(req.body.offerPrice) : existingProduct.offerPrice
+    };
+    const updatedProduct = await Product.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+    res.json({ success : true, message : 'Product updated Sucessfully!', updatedProduct })
   } catch (error) {
     res.json({ success : false, message : error.message })
   }

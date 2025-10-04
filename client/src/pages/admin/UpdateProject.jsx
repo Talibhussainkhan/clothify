@@ -1,12 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
 const fetchProductById = async (id) => {
   const res = await axios.get(`http://localhost:5000/api/product/get/${id}`);
   return res.data;
 };
+
+const updateProduct = async ({id, formData}) => {
+  const res = await axios.put(`http://localhost:5000/api/product/update/${id}`, formData);
+  return res.data;
+}
 
 const UpdateProject = () => {
   const [productData, setProductData] = useState({
@@ -19,25 +25,40 @@ const UpdateProject = () => {
     offerPrice: 0,
   });
   const { id } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const { data, isPending } = useQuery({
+  const { data: fetchData , isPending : fetchIsPending } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn : updateProduct,
+    onSuccess : (data)=>{
+      if(data.success){
+        toast.success(data.message);
+        navigate('/admin/manage-product');
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+      }else{
+        toast.error(data.message)
+      }
+    }
+  })
+
   useEffect(() => {
-    if (data) {
+    if (fetchData) {
       setProductData({
-        images: data.product.images || Array(4).fill(null),
-        name: data.product.name || "",
-        description: data.product.description || "",
-        category: data.product.category || "",
-        price: data.product.price || 0,
-        discount: data.product.discount || false,
-        offerPrice: data.product.offerPrice || 0,
+        images: fetchData.product.images || Array(4).fill(null),
+        name: fetchData.product.name || "",
+        description: fetchData.product.description || "",
+        category: fetchData.product.category || "",
+        price: fetchData.product.price || 0,
+        discount: fetchData.product.discount || false,
+        offerPrice: fetchData.product.offerPrice || 0,
       });
     }
-  }, [data]);
+  }, [fetchData]);
 
 
   const handleImage = (e, index) => {
@@ -65,7 +86,34 @@ const UpdateProject = () => {
     }
   };
 
-  if(isPending){
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (productData.discount && productData.price < productData.offerPrice) {
+      return toast.error("Offer price must be less than original price!");
+    }
+
+    const hasImage = productData.images.some((file) => file !== null);
+    if (!hasImage) {
+      toast.error("Please upload at least one product image!");
+      return;
+    }
+    const formData = new FormData();
+
+    productData.images.forEach((file) => {
+      if (file) {
+        formData.append("images", file);
+      }
+    });
+    formData.append("name", productData.name);
+    formData.append("description", productData.description);
+    formData.append("category", productData.category);
+    formData.append("price", productData.price);
+    formData.append("discount", productData.discount);
+    formData.append("offerPrice", productData.offerPrice);
+    mutate({id, formData})
+  }
+
+  if(fetchIsPending){
     return (
       <div className="text-center text-2xl my-4">Loading...</div>
     )
@@ -78,7 +126,7 @@ const UpdateProject = () => {
           Update Products
         </h1>
         <form
-          //   onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
           className="md:px-10 p-4 flex flex-col sm:flex-row gap-4 max-w-6xl"
         >
           <div className="flex-1 flex flex-col gap-5">
@@ -212,8 +260,7 @@ const UpdateProject = () => {
               type="submit"
               className="px-8 py-2.5 bg-indigo-500 text-white font-medium rounded"
             >
-              Update
-              {/* {isPending ? "Adding" : "ADD"} */}
+              {isPending ? "Update...." : "Update"}
             </button>
           </div>
         </form>
